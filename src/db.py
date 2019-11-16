@@ -25,3 +25,15 @@ class StudyGroup(db.Model):
             # TODO serialize participants
         }
 
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    netid = db.Column(db.String, nullable=False)
+    # study_groups = db.relationship('StudyGroup', secondary=participant_association_table)
+
+    def __init__(self, **kwargs):
+        self.name = kwargs.get('name', 'Anonymous')
+        self.netid = kwargs.get('netid', 'None')
+        # self.study_groups = []
+
