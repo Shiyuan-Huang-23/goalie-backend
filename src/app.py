@@ -1,6 +1,7 @@
 import json
 from db import db, StudyGroup, User
 from flask import Flask, request
+import datetime
 
 app = Flask(__name__)
 # TODO make a more creative database name
