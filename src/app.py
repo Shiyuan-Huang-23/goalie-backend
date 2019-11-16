@@ -1,5 +1,5 @@
 import json
-from db import db, Course, User, Assignment
+from db import db, StudyGroup, User
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -16,6 +16,10 @@ with app.app_context():
 
 @app.route('/api/study_groups/')
 def get_all_groups():
+    # TODO do we want to call this groups?
     groups = StudyGroup.query.all()
     res = {'success': True, 'data': [g.serialize() for g in groups]}
     return json.dumps(res), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
