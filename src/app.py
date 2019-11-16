@@ -45,6 +45,15 @@ def create_group():
     data = group.serialize()
     data['participants'] = []
     return json.dumps({'success': True, 'data': data}), 201
-    
+
+@app.route('/api/study_group/<int:group_id>', methods=['DELETE'])
+def delete_group(group_id):
+    group = StudyGroup.query.filter_by(id=group_id).first()
+    if not group:
+        return json.dumps({'success': False, 'error': 'Study group not found'}), 404
+    db.session.delete(group)
+    db.session.commit()
+    return json.dumps({'success': True, 'data': grouop.serialize()}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
