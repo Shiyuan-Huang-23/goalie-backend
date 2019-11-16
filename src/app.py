@@ -21,5 +21,30 @@ def get_all_groups():
     res = {'success': True, 'data': [g.serialize() for g in groups]}
     return json.dumps(res), 200
 
+@app.route('/api/study_groups/', methods=['POST'])
+def create_group():
+    post_body = json.loads(request.data)
+    name = post_body.get('name', '')
+    date = post_body.get('date', datetime.datetime.now())
+    time = post_body.get('time', dateTime.datetime.now())
+    duration = post_body.get('duration', 1)
+    location = post_body.get('location', 'Nowhere')
+    description = post_body.get('description', '')
+
+    group = Group(
+        name=name,
+        date=date,
+        time=time,
+        duration=duration,
+        location=location,
+        description=description
+    )
+
+    db.session.add(group)
+    db.session.commit()
+    data = group.serialize()
+    data['participants'] = []
+    return json.dumps({'success': True, 'data': data}), 201
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
