@@ -1,3 +1,6 @@
+# maybe use this to convert between JSON and Python when dealing with datetime 
+# https://stackoverflow.com/questions/10805589/convert-json-date-string-to-python-datetime
+
 import json
 from db import db, StudyGroup, User
 from flask import Flask, request
@@ -17,7 +20,6 @@ with app.app_context():
 
 @app.route('/api/study_groups/')
 def get_all_groups():
-    # TODO do we want to call this groups?
     groups = StudyGroup.query.all()
     res = {'success': True, 'data': [g.serialize() for g in groups]}
     return json.dumps(res), 200
@@ -27,12 +29,12 @@ def create_group():
     post_body = json.loads(request.data)
     name = post_body.get('name', '')
     date = post_body.get('date', datetime.datetime.now())
-    time = post_body.get('time', dateTime.datetime.now())
+    time = post_body.get('time', datetime.datetime.now())
     duration = post_body.get('duration', 1)
     location = post_body.get('location', 'Nowhere')
     description = post_body.get('description', '')
 
-    group = Group(
+    group = StudyGroup(
         name=name,
         date=date,
         time=time,
@@ -47,14 +49,14 @@ def create_group():
     data['participants'] = []
     return json.dumps({'success': True, 'data': data}), 201
 
-@app.route('/api/study_group/<int:group_id>', methods=['DELETE'])
+@app.route('/api/study_group/<int:group_id>/', methods=['DELETE'])
 def delete_group(group_id):
     group = StudyGroup.query.filter_by(id=group_id).first()
     if not group:
         return json.dumps({'success': False, 'error': 'Study group not found'}), 404
     db.session.delete(group)
     db.session.commit()
-    return json.dumps({'success': True, 'data': grouop.serialize()}), 200
+    return json.dumps({'success': True, 'data': group.serialize()}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
