@@ -4,7 +4,7 @@ import datetime
 db = SQLAlchemy()
 
 participant_association_table = db.Table('participant_association', db.Model.metadata,
-    db.Column('study_group_id', db.Integer, db.ForeignKey('studygroup.id')),
+    db.Column('study_group_id', db.Integer, db.ForeignKey('study_group.id')),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
 )
 
@@ -18,7 +18,7 @@ class StudyGroup(db.Model):
     location = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     likes = db.Column(db.Integer, nullable=False)
-    participants = db.relation('User', secondary=participant_association_table, backpopulates='study_groups')
+    participants = db.relation('User', secondary=participant_association_table, back_populates='study_groups')
 
     def __init__(self, **kwargs):
         self.name = kwargs.get('name', 'Unnamed Study Group')
@@ -43,6 +43,9 @@ class StudyGroup(db.Model):
             'likes': self.likes,
             'participants': [p.serialize() for p in self.participants]
         }
+
+    def add_like(self):
+        self.likes += 1
 
 class User(db.Model):
     __tablename__ = 'user'

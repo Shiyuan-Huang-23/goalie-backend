@@ -60,12 +60,47 @@ def delete_group(group_id):
 
 @app.route('/api/likes/<int:group_id>/', methods=['POST'])
 def add_like(group_id):
-    group = StudyGroup.query.filter_by(id=Group_id).first()
+    group = StudyGroup.query.filter_by(id=group_id).first()
     if not group:
         return json.dumps({'success': False, 'error': 'Study group not found. You should get some sleep.'}), 404
-    group['likes'] += 1
+    group.add_like()
     db.session.commit()
     return json.dumps({'success': True, 'data': group.serialize()}), 201
+
+@app.route('/api/users/')
+def get_users():
+    users = User.query.all()
+    res = {'success': True, 'data': [u.serialize() for u in users]}
+    return json.dumps(res), 200
+
+@app.route('/api/users/', methods=['POST'])
+def create_user():
+    post_body = json.loads(request.data)
+    name = post_body.get('name', 'Anonymous')
+    netid = post_body.get('netid', 'None')
+    user = User(
+        name=name,
+        netid=netid
+    )
+    db.session.add(user)
+    db.session.commit()
+    data = user.serialize()
+    data['study_groups'] = []
+    return json.dumps({'success': True, 'data': data}), 201
+
+@app.route('/api/study_group/<int:group_id>/add/', methods=['POST'])
+def add_user_to_group(group_id):
+    group = StudyGroup.query.filter_by(id=group_id).first()
+    if not group:
+        return json.dumps({'success': False, 'error': 'Study group not found. You should get some sleep.'}), 404
+    post_body = json.loads(request.data)
+    user_id = post_body.get('user_id')
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return json.dumps({'success': False, 'error': 'User not found!'}), 404
+    group.participants.append(user)
+    db.session.commit()
+    return json.dumps({'success': True, 'data': group.serialize()}), 200
 
 
 if __name__ == '__main__':
