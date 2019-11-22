@@ -58,5 +58,15 @@ def delete_group(group_id):
     db.session.commit()
     return json.dumps({'success': True, 'data': group.serialize()}), 200
 
+@app.route('/api/likes/<int:group_id>/', methods=['POST'])
+def add_like(group_id):
+    group = StudyGroup.query.filter_by(id=Group_id).first()
+    if not group:
+        return json.dumps({'success': False, 'error': 'Study group not found. You should get some sleep.'}), 404
+    group['likes'] += 1
+    db.session.commit()
+    return json.dumps({'success': True, 'data': group.serialize()}), 201
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

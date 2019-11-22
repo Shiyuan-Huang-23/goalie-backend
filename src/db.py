@@ -3,6 +3,11 @@ import datetime
 
 db = SQLAlchemy()
 
+participant_association_table = db.Table('participant_association', db.Model.metadata,
+    db.Column('study_group_id', db.Integer, db.ForeignKey('studygroup.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 class StudyGroup(db.Model):
     __tablename__ = 'study_group'
     id = db.Column(db.Integer, primary_key=True)
@@ -12,8 +17,8 @@ class StudyGroup(db.Model):
     duration = db.Column(db.Float, nullable=False)
     location = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
-    # TODO participants/users
-    # participants = db.relation('User', secondary=participant_association_table, backpopulates='study_groups')
+    likes = db.Column(db.Integer, nullable=False)
+    participants = db.relation('User', secondary=participant_association_table, backpopulates='study_groups')
 
     def __init__(self, **kwargs):
         self.name = kwargs.get('name', 'Unnamed Study Group')
@@ -23,6 +28,7 @@ class StudyGroup(db.Model):
         self.duration = kwargs.get('duration', 1)
         self.location = kwargs.get('location', 'Nowhere')
         self.description = kwargs.get('description', '')
+        self.likes = 0
         self.participants = []
     
     def serialize(self):
@@ -33,8 +39,9 @@ class StudyGroup(db.Model):
             'time': self.time.strftime("%I:%M"),
             'duration': self.duration,
             'location': self.location,
-            'description': self.description
-            # TODO serialize participants
+            'description': self.description,
+            'likes': self.likes,
+            'participants': [p.serialize() for p in self.participants]
         }
 
 class User(db.Model):
@@ -42,10 +49,17 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     netid = db.Column(db.String, nullable=False)
-    # study_groups = db.relationship('StudyGroup', secondary=participant_association_table)
+    study_groups = db.relationship('StudyGroup', secondary=participant_association_table)
 
     def __init__(self, **kwargs):
         self.name = kwargs.get('name', 'Anonymous')
         self.netid = kwargs.get('netid', 'None')
-        # self.study_groups = []
+        self.study_groups = []
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'netid': self.netid
+        }
 
