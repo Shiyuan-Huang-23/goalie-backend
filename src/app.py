@@ -90,6 +90,15 @@ def create_user():
     data['study_groups'] = []
     return json.dumps({'success': True, 'data': data}), 201
 
+@app.route('/api/user/<int:user_id>/')
+def get_user(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return json.dumps({'success': False, 'error': 'User not found.'}), 404
+    data = user.serialize()
+    data['study_groups'] = [g.serialize() for g in user.study_groups]
+    return json.dumps({'success': True, 'data': data}), 200
+
 @app.route('/api/study_group/<int:group_id>/add/', methods=['POST'])
 def add_user_to_group(group_id):
     group = StudyGroup.query.filter_by(id=group_id).first()
