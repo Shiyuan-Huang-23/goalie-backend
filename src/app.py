@@ -33,6 +33,7 @@ def create_group():
     duration = post_body.get('duration', 1)
     location = post_body.get('location', 'Nowhere')
     description = post_body.get('description', '')
+    image = post_body.get('image')
 
     group = StudyGroup(
         name=name,
@@ -40,7 +41,8 @@ def create_group():
         time=time,
         duration=duration,
         location=location,
-        description=description
+        description=description,
+        image=image
     )
 
     db.session.add(group)

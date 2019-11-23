@@ -17,6 +17,7 @@ class StudyGroup(db.Model):
     duration = db.Column(db.Float, nullable=False)
     location = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
+    image = db.Column(db.String, nullable=False)
     likes = db.Column(db.Integer, nullable=False)
     participants = db.relation('User', secondary=participant_association_table, back_populates='study_groups')
 
@@ -28,6 +29,7 @@ class StudyGroup(db.Model):
         self.duration = kwargs.get('duration', 1)
         self.location = kwargs.get('location', 'Nowhere')
         self.description = kwargs.get('description', '')
+        self.image = kwargs.get('image')
         self.likes = 0
         self.participants = []
     
@@ -40,6 +42,7 @@ class StudyGroup(db.Model):
             'duration': self.duration,
             'location': self.location,
             'description': self.description,
+            'image': self.image,
             'likes': self.likes,
             'participants': [p.serialize() for p in self.participants]
         }
