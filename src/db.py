@@ -12,8 +12,8 @@ class StudyGroup(db.Model):
     __tablename__ = 'study_group'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
-    time = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.String, nullable=False)
+    time = db.Column(db.String, nullable=False)
     duration = db.Column(db.Float, nullable=False)
     location = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
@@ -24,8 +24,8 @@ class StudyGroup(db.Model):
     def __init__(self, **kwargs):
         self.name = kwargs.get('name', 'Unnamed Study Group')
         # TODO change this to allow users to set a date and time
-        self.date = datetime.datetime.now()
-        self.time = datetime.datetime.now()
+        self.date = kwargs.get('date', '')
+        self.time = kwargs.get('time', '')
         self.duration = kwargs.get('duration', 1)
         self.location = kwargs.get('location', 'Nowhere')
         self.description = kwargs.get('description', '')
@@ -37,8 +37,8 @@ class StudyGroup(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'date': self.date.strftime("%m/%d/%y"),
-            'time': self.time.strftime("%I:%M"),
+            'date': self.date,
+            'time': self.time,
             'duration': self.duration,
             'location': self.location,
             'description': self.description,

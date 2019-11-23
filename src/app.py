@@ -28,8 +28,8 @@ def get_all_groups():
 def create_group():
     post_body = json.loads(request.data)
     name = post_body.get('name', '')
-    date = post_body.get('date', datetime.datetime.now())
-    time = post_body.get('time', datetime.datetime.now())
+    date = post_body.get('date')
+    time = post_body.get('time')
     duration = post_body.get('duration', 1)
     location = post_body.get('location', 'Nowhere')
     description = post_body.get('description', '')
