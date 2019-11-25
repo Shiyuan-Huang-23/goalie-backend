@@ -21,7 +21,7 @@ with app.app_context():
 @app.route('/api/study_groups/')
 def get_all_groups():
     groups = StudyGroup.query.all()
-    res = {'success': True, 'data': [g.serialize() for g in groups]}
+    res = {'success': True, 'data': {'sessions': [g.serialize() for g in groups]}}
     return json.dumps(res), 200
 
 @app.route('/api/study_groups/', methods=['POST'])
@@ -48,8 +48,8 @@ def create_group():
     db.session.add(group)
     db.session.commit()
     data = group.serialize()
-    data['participants'] = []
-    return json.dumps({'success': True, 'data': data}), 201
+    # data['participants'] = []
+    return json.dumps({'success': True, 'data': {'sessions': data}}), 201
 
 @app.route('/api/study_group/<int:group_id>/', methods=['DELETE'])
 def delete_group(group_id):

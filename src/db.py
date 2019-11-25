@@ -35,16 +35,16 @@ class StudyGroup(db.Model):
     
     def serialize(self):
         return {
-            'id': self.id,
+            # 'id': self.id,
             'name': self.name,
             'date': self.date,
             'time': self.time,
             'duration': self.duration,
-            'location': self.location,
             'description': self.description,
             'image': self.image,
-            'likes': self.likes,
-            'participants': [p.serialize() for p in self.participants]
+            'location': self.location,
+            # 'likes': self.likes,
+            # 'participants': [p.serialize() for p in self.participants]
         }
 
     def add_like(self):
