@@ -2,7 +2,7 @@
 # https://stackoverflow.com/questions/10805589/convert-json-date-string-to-python-datetime
 
 import json
-from db import db, StudyGroup, User
+from db import db, StudyGroup, User, Partner
 from flask import Flask, request
 import datetime
 
@@ -112,6 +112,41 @@ def add_user_to_group(group_id):
     group.participants.append(user)
     db.session.commit()
     return json.dumps({'success': True, 'data': group.serialize()}), 200
+
+@app.route('/api/partners/')
+def get_all_partners():
+    posts = Partner.query.all()
+    res = {'success': True, 'data': {'posts': [p.serialize() for p in posts]}}
+    return json.dumps(res), 200
+
+@app.route('/api/partners/', methods=['POST'])
+def create_partner_post():
+    post_body = json.loads(request.data)
+    name = post_body.get('name', 'Anonymous')
+    netid = post_body.get('netid', '')
+    course = post_body.get('course', '')
+    description = post_body.get('description', '')
+
+    post = Partner(
+        name=name,
+        netid=netid,
+        course=course,
+        description=description
+    )
+
+    db.session.add(post)
+    db.session.commit()
+
+    return json.dumps({'success': True, 'data': post.serialize()}), 200
+
+@app.route('/api/partner/<int:id>/', methods=['DELETE'])
+def delete_partner_post(id):
+    post = Partner.query.filter_by(id=id).first()
+    if not post:
+        return json.dumps({'success': False, 'error': 'Post not found'}), 404
+    db.session.delete(post)
+    db.session.commit()
+    return json.dumps({'success': True, 'data': post.serialize()}), 200
 
 
 if __name__ == '__main__':

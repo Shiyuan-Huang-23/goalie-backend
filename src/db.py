@@ -69,3 +69,26 @@ class User(db.Model):
             'netid': self.netid
         }
 
+class Partner(db.Model):
+    __tablename__ = 'partner'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    netid = db.Column(db.String, nullable=False)
+    course = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+
+    def __init__(self, **kwargs):
+        self.name = kwargs.get('name', 'Anonymous')
+        self.netid = kwargs.get('netid', '')
+        self.course = kwargs.get('course', '')
+        self.description = kwargs.get('description', '')
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'netid': self.netid,
+            'course': self.course,
+            'description': self.description
+        }
+
