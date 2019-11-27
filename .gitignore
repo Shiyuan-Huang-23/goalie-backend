@@ -2,3 +2,4 @@ venv/
 src/__pycache__/db.cpython-37.pyc
 src/study.db
 *.db
+.vscode/
