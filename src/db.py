@@ -69,8 +69,8 @@ class User(db.Model):
             'netid': self.netid
         }
 
-class Partner(db.Model):
-    __tablename__ = 'partner'
+class PartnerPost(db.Model):
+    __tablename__ = 'partner_post'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     netid = db.Column(db.String, nullable=False)

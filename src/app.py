@@ -2,7 +2,7 @@
 # https://stackoverflow.com/questions/10805589/convert-json-date-string-to-python-datetime
 
 import json
-from db import db, StudyGroup, User, Partner
+from db import db, StudyGroup, User, PartnerPost
 from flask import Flask, request
 import datetime
 
@@ -114,8 +114,8 @@ def add_user_to_group(group_id):
     return json.dumps({'success': True, 'data': group.serialize()}), 200
 
 @app.route('/api/partners/')
-def get_all_partners():
-    posts = Partner.query.all()
+def get_all_partner_posts():
+    posts = PartnerPost.query.all()
     res = {'success': True, 'data': {'posts': [p.serialize() for p in posts]}}
     return json.dumps(res), 200
 
@@ -127,7 +127,7 @@ def create_partner_post():
     course = post_body.get('course', '')
     description = post_body.get('description', '')
 
-    post = Partner(
+    post = PartnerPost(
         name=name,
         netid=netid,
         course=course,
@@ -141,7 +141,7 @@ def create_partner_post():
 
 @app.route('/api/partner/<int:id>/', methods=['DELETE'])
 def delete_partner_post(id):
-    post = Partner.query.filter_by(id=id).first()
+    post = PartnerPost.query.filter_by(id=id).first()
     if not post:
         return json.dumps({'success': False, 'error': 'Post not found'}), 404
     db.session.delete(post)
