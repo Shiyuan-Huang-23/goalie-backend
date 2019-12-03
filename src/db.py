@@ -14,7 +14,7 @@ class StudyGroup(db.Model):
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.String, nullable=False)
     time = db.Column(db.String, nullable=False)
-    duration = db.Column(db.Float, nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
     location = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     image = db.Column(db.String, nullable=False)
